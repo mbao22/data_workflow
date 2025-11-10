@@ -1,0 +1,54 @@
+name: Scheduled Tests
+
+on:
+  schedule:
+    # Run every Monday at 06:00 UTC
+    - cron: '0 6 * * 1'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  weekly-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        
+    - name: Generate test report
+      run: |
+        echo "# Weekly Test Report - $(date)" > test-report.md
+        echo "## Project: Data Workflow Dashboard" >> test-report.md
+        echo "## Test Results" >> test-report.md
+        echo "" >> test-report.md
+        
+        # Test Python syntax
+        python -m py_compile app.py && echo "✅ app.py syntax: PASS" >> test-report.md || echo "❌ app.py syntax: FAIL" >> test-report.md
+        python -m py_compile run.py && echo "✅ run.py syntax: PASS" >> test-report.md || echo "❌ run.py syntax: FAIL" >> test-report.md
+        
+        # Test template file existence
+        [ -f "templates/index.html" ] && echo "✅ templates/index.html: EXISTS" >> test-report.md || echo "❌ templates/index.html: MISSING" >> test-report.md
+        
+        # Test requirements file
+        [ -f "requirements.txt" ] && echo "✅ requirements.txt: EXISTS" >> test-report.md || echo "❌ requirements.txt: MISSING" >> test-report.md
+        
+        echo "" >> test-report.md
+        echo "## Project Statistics" >> test-report.md
+        echo "- Python files: $(find . -name "*.py" | wc -l)" >> test-report.md
+        echo "- HTML files: $(find . -name "*.html" | wc -l)" >> test-report.md
+        echo "- Total lines of code: $(find . -name "*.py" -o -name "*.html" | xargs wc -l | tail -1 | awk '{print $1}')" >> test-report.md
+        
+    - name: Upload test report
+      uses: actions/upload-artifact@v3
+      with:
+        name: weekly-test-report
+        path: test-report.md
