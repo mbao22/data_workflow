@@ -42,23 +42,23 @@ jobs:
     - name: Test data loading
       run: |
         python -c "
-import pandas as pd
-import tempfile
-import os
+        import pandas as pd
+        import tempfile
+        import os
 
-# Test customer data loading
-try:
-    df = pd.read_csv('customer data.txt')
-    print('✅ Customer data loaded successfully')
-    print(f'Columns: {list(df.columns)}')
-except Exception as e:
-    print(f'❌ Customer data loading failed: {e}')
+        # Test customer data loading
+        try:
+            df = pd.read_csv('customer data.txt')
+            print('✅ Customer data loaded successfully')
+            print(f'Columns: {list(df.columns)}')
+        except Exception as e:
+            print(f'❌ Customer data loading failed: {e}')
 
-# Test order data loading
-try:
-    df = pd.read_csv('order data.txt')
-    print('✅ Order data loaded successfully')
-    print(f'Columns: {list(df.columns)}')
-except Exception as e:
-    print(f'❌ Order data loading failed: {e}')
-        "
+        # Test order data loading
+        try:
+            df = pd.read_csv('order data.txt')
+            print('✅ Order data loaded successfully')
+            print(f'Columns: {list(df.columns)}')
+        except Exception as e:
+            print(f'❌ Order data loading failed: {e}')
+                "
